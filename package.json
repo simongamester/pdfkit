@@ -39,7 +39,8 @@
     "prettier": "1.15.3",
     "rollup": "^0.65.0",
     "rollup-plugin-babel": "^3.0.7",
-    "rollup-plugin-cpy": "^1.0.0"
+    "rollup-plugin-cpy": "^1.0.0",
+    "watchify": "^3.11.1"
   },
   "dependencies": {
     "crypto-js": "^3.1.9-1",
@@ -53,6 +54,7 @@
     "build": "rollup -c",
     "demo": "cd demo && node test.js",
     "browser-demo": "browserify demo/browser.js > demo/bundle.js",
+    "watchify-demo": "watchify demo/browser.js -o 'demo/browser.js > demo/bundle.js'",
     "pdf-guide": "node docs/generate.js",
     "website": "node docs/generate_website.js",
     "docs": "npm run pdf-guide && npm run website && npm run browser-demo",
