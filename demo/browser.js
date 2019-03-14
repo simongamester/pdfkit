@@ -10,6 +10,8 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
   var doc = new PDFDocument();
   var stream = doc.pipe(blobStream());
 
+  // START DOCUMENT
+
   var form = {
     preferredName: 'John',
     fullName: 'John Smith',
@@ -496,29 +498,6 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
     iframe.src = stream.toBlobURL('application/pdf');
   });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Images
