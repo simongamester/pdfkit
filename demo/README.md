@@ -15,13 +15,13 @@ Assuming no further changes are made to the ReSPECT form, the content for the fo
 
 ## Installation
 
-`npm install
-npm run build
-npm run browser-demo`
+`npm install`
+`npm run build`
+`npm run browser-demo`
 
 ## Development
 
 It's possible to view live updates of the browser.js by using watchify:
 
-`cd demo
-watchify browser.js -o bundle.js -v`
+`cd demo`
+`watchify browser.js -o bundle.js -v`
