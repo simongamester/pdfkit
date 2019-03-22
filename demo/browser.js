@@ -243,13 +243,13 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
     sectionNineConfirmation1: {
       reviewDate: ( obj.sections.confirmation.confirmationsArray[0] ? getDDMMMYYYY(obj.sections.confirmation.confirmationsArray[0].reviewDate) : '' ),
       designation: ( obj.sections.confirmation.confirmationsArray[0] ? obj.sections.confirmation.confirmationsArray[0].designation : '' ),
-      name: ( obj.sections.confirmation.confirmationsArray[0] ? obj.sections.confirmation.confirmationsArray[0].clinicianName : '' ),
+      name: ( obj.sections.confirmation.confirmationsArray[0] ? obj.sections.confirmation.confirmationsArray[0].clinicialName : '' ),
       number: ( obj.sections.confirmation.confirmationsArray[0] ? obj.sections.confirmation.confirmationsArray[0].gmcNumber : '' )
     },
     sectionNineConfirmation2: {
       reviewDate: ( obj.sections.confirmation.confirmationsArray[1] ? getDDMMMYYYY(obj.sections.confirmation.confirmationsArray[1].reviewDate) : '' ),
       designation: ( obj.sections.confirmation.confirmationsArray[1] ? obj.sections.confirmation.confirmationsArray[1].designation : '' ),
-      name: ( obj.sections.confirmation.confirmationsArray[1] ? obj.sections.confirmation.confirmationsArray[1].clinicianName : '' ),
+      name: ( obj.sections.confirmation.confirmationsArray[1] ? obj.sections.confirmation.confirmationsArray[1].clinicialName : '' ),
       number: ( obj.sections.confirmation.confirmationsArray[1] ? obj.sections.confirmation.confirmationsArray[1].gmcNumber : '' )
     }
   }
