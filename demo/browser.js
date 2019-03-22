@@ -27,11 +27,28 @@ function getDDMMMYYYY(date){
   }
 }
 
+
+function getClinicalRecommendations(obj){
+  switch( obj.sections.clinicalRecommendation.focusValue ){
+    case 'Life-sustaining treatment':
+      return 5;
+      break;
+    case 'Symptom control':
+      return 95;
+      break;
+    default:
+      return 50;
+      break;
+  }
+}
+
+
 function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
   // create a document and pipe to a blob
   var doc = new PDFDocument();
   var stream = doc.pipe(blobStream());
 
+  // This is an example of the JSON Object provided by Rob
   var json  = `{
     "sections": {
       "personalDetails": {
@@ -67,7 +84,7 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
         "dateCompleted": "22-Mar-2019",
         "clinicalGuidance": "Some text...",
         "cprValue": "2",
-        "focusValue": 11.3,
+        "focusValue": "Life-sustaining treatment",
         "status": "Completed"
       },
       "capacityAndRepresentation": {
@@ -187,7 +204,7 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
     sectionTwoDetails: obj.sections.summaryInformation.details,
     sectionThreeX: (obj.sections.personalPreferences.preferencesValue * 10), // Data collected assumed to be between 0 and 10, we draw between 0 and 100, so multiply by 10
     sectionThreeDetails: obj.sections.personalPreferences.preferencesText,
-    sectionFourClinicalRecommendationsX: (obj.sections.clinicalRecommendation.focusValue * 10),
+    sectionFourClinicalRecommendationsX: getClinicalRecommendations(obj), // Returns position for the 'X' that appears on the form. 'Life-sustaining treatment' = 10 (left side), 'Symptom control' = 90 (right side)
     sectionFourClinicalRecommendations: obj.sections.clinicalRecommendation.clinicalGuidance,
     sectionFiveCapacity: obj.sections.capacityAndRepresentation.capacityFirst, // Yes or No
     sectionFiveLegalProxy: obj.sections.capacityAndRepresentation.capacitySecond, // Yes, No or Unknown
@@ -281,7 +298,7 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
     });
 
     // Date Completed
-    doc.text(form.dateCompleted, 505, 99, {
+    doc.text(form.dateCompleted, 505, 100, {
       width: 75,
       height: 23
     });
