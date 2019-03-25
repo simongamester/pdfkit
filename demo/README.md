@@ -21,6 +21,12 @@ Assuming no further changes are made to the ReSPECT form, the content for the fo
 
 `npm run browser-demo`
 
+### Watchify
+
+You can use watchify to watch for changes to browser.js and build the bundle automatically.
+
+`npm install -g watchify`
+
 ## Development
 
 It's possible to view live updates of the browser.js by using watchify:
@@ -28,3 +34,7 @@ It's possible to view live updates of the browser.js by using watchify:
 `cd demo`
 
 `watchify browser.js -o bundle.js -v`
+
+A working example of this can be found on Surge here:
+
+http://wrathful-request.surge.sh/browser.html

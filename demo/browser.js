@@ -19,6 +19,7 @@ function address(obj){
   return arr.join(', ');
 }
 
+
 function getDDMMMYYYY(date){
   if( moment(date).isValid() ){
     return moment(date).format('DD-MMM-YYYY');
@@ -105,14 +106,14 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
           {
             "clinicalSignature": "Robert Tweed",
             "designation": "qwerty",
-            "clinicialName": "qwerty",
+            "clinicialName": "1 qwerty",
             "gmcNumber": "123456789",
             "isSrc": true,
             "dateAndTime": "2019-03-09T22:00:00.000Z"
           },
           {
             "designation": "ytrewq",
-            "clinicialName": "asdfg",
+            "clinicialName": "2 asdfg",
             "gmcNumber": "741852963",
             "clinicalSignature":" Robert Tweed",
             "dateAndTime": "2019-02-23T22:00:00.000Z"
@@ -202,7 +203,7 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
     address: address(obj),
     sectionTwoDiagnostics: obj.sections.summaryInformation.summary,
     sectionTwoDetails: obj.sections.summaryInformation.details,
-    sectionThreeX: (obj.sections.personalPreferences.preferencesValue * 10), // Data collected assumed to be between 0 and 10, we draw between 0 and 100, so multiply by 10
+    sectionThreeX: obj.sections.personalPreferences.preferencesValue,
     sectionThreeDetails: obj.sections.personalPreferences.preferencesText,
     sectionFourClinicalRecommendationsX: getClinicalRecommendations(obj), // Returns position for the 'X' that appears on the form. 'Life-sustaining treatment' = 10 (left side), 'Symptom control' = 90 (right side)
     sectionFourClinicalRecommendations: obj.sections.clinicalRecommendation.clinicalGuidance,
