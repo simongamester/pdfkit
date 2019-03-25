@@ -188,7 +188,7 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
   // Include all other clinicians in here
   var clinicians = [];
   for( i=0; i<obj.sections.clinicalSignatures.signaturesArray.length; i++ ){
-    if( obj.sections.clinicalSignatures.signaturesArray[i].isSrc ){
+    if( !obj.sections.clinicalSignatures.signaturesArray[i].isSrc ){
       clinicians.push(obj.sections.clinicalSignatures.signaturesArray[i]);
     }
   }
