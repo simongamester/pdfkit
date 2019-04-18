@@ -10,12 +10,12 @@ require('brace/theme/monokai');
 
 function address(obj){
   var arr = [];
-  if( obj.sections.personalDetails.streetAddress ){ arr.push(obj.sections.personalDetails.streetAddress); }
-  if( obj.sections.personalDetails.addressSecondLine ){ arr.push(obj.sections.personalDetails.addressSecondLine); }
-  if( obj.sections.personalDetails.city ){ arr.push(obj.sections.personalDetails.city); }
-  if( obj.sections.personalDetails.country ){ arr.push(obj.sections.personalDetails.country); }
-  if( obj.sections.personalDetails.county ){ arr.push(obj.sections.personalDetails.county); }
-  if( obj.sections.personalDetails.postCode ){ arr.push(obj.sections.personalDetails.postCode); }
+  if( obj.personalDetails.streetAddress ){ arr.push(obj.personalDetails.streetAddress); }
+  if( obj.personalDetails.addressSecondLine ){ arr.push(obj.personalDetails.addressSecondLine); }
+  if( obj.personalDetails.city ){ arr.push(obj.personalDetails.city); }
+  if( obj.personalDetails.country ){ arr.push(obj.personalDetails.country); }
+  if( obj.personalDetails.county ){ arr.push(obj.personalDetails.county); }
+  if( obj.personalDetails.postCode ){ arr.push(obj.personalDetails.postCode); }
   return arr.join(', ');
 }
 
@@ -30,7 +30,7 @@ function getDDMMMYYYY(date){
 
 
 function getClinicalRecommendations(obj){
-  switch( obj.sections.clinicalRecommendation.focusValue ){
+  switch( obj.clinicalRecommendation.focusValue ){
     case 'Life-sustaining treatment':
       return 5;
       break;
@@ -44,6 +44,25 @@ function getClinicalRecommendations(obj){
 }
 
 
+function getCPRValue(obj){
+  // Returns the X coordinate for the signature box text
+  switch( obj.clinicalRecommendation.cprValue ){
+    case 'CPRRecommended':
+      return 31;
+      break;
+    case 'ModifiedCPR':
+      return 221;
+      break;
+    case 'NotforCPR':
+      return 411;
+      break;
+    default:
+      return 0;
+      break;
+  }
+}
+
+
 function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
   // create a document and pipe to a blob
   var doc = new PDFDocument();
@@ -51,123 +70,106 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
 
   // This is an example of the JSON Object provided by Rob
   var json  = `{
-    "sections": {
-      "personalDetails": {
-        "nhsNumber": "9999999801",
-        "dateCompleted": "22-Mar-2019",
-        "preferredName": "Mr",
-        "firstName": "John",
-        "surname": "Doe",
-        "streetAddress": "Some address...",
-        "addressSecondLine": "Some address...",
-        "city": "London",
-        "county": "Some county...",
-        "postCode": "QWERTY1234",
-        "country": "UK",
-        "birthDate": "2019-03-05T22:00:00.000Z",
-        "status": "Completed"
-      },
-      "summaryInformation": {
-        "dateCompleted": "22-Mar-2019",
-        "summary": "Summary text...",
-        "details": "Details text...",
-        "status": "Completed"
-      },
-      "personalPreferences": {
-        "dateCompleted": "22-Mar-2019",
-        "preferencesText": "Some text...",
-        "preferencesValue": 8.9,
-        "status": "Completed"
-      },
-      "clinicalRecommendation": {
-        "clinicalSignatureFirst": "Robert Tweed",
-        "clinicalSignatureSecond": "Robert Tweed",
-        "dateCompleted": "22-Mar-2019",
-        "clinicalGuidance": "Some text...",
-        "cprValue": "2",
-        "focusValue": "Life-sustaining treatment",
-        "status": "Completed"
-      },
-      "capacityAndRepresentation": {
-        "dateCompleted": "22-Mar-2019",
-        "capacityFirst": "2",
-        "capacitySecond": "2",
-        "status": "Completed"
-      },
-      "involvement": {
-        "dateCompleted": "22-Mar-2019",
-        "records": "Some text...",
-        "variant": "variantB",
-        "status": "Completed"
-      },
-      "clinicalSignatures": {
-        "dateCompleted":"22-Mar-2019",
-        "signaturesArray": [
-          {
-            "clinicalSignature": "Robert Tweed",
-            "designation": "qwerty",
-            "clinicialName": "1 qwerty",
-            "gmcNumber": "123456789",
-            "isSrc": true,
-            "dateAndTime": "2019-03-09T22:00:00.000Z"
-          },
-          {
-            "designation": "ytrewq",
-            "clinicialName": "2 asdfg",
-            "gmcNumber": "741852963",
-            "clinicalSignature":" Robert Tweed",
-            "dateAndTime": "2019-02-23T22:00:00.000Z"
-          }
-        ],
-        "status": "Completed"
-      },
-      "emergencyContacts": {
-        "dateCompleted": "22-Mar-2019",
-        "contactsArray": [
-          {
-            "details": "Some text...",
-            "role": "Husband",
-            "name": "John",
-            "phone": "+380663729988"
-          },
-          {
-            "role": "Father",
-            "name": "James",
-            "phone": "+38050802287",
-            "details": "Some text..."
-          }
-        ],
-        "status": "Completed"
-      },
-      "confirmation": {
-        "dateCompleted": "22-Mar-2019",
-        "confirmationsArray": [
-          {
-            "clinicalSignature": "Robert Tweed",
-            "designation": "qwerty",
-            "clinicialName": "Nick",
-            "gmcNumber": "963852741",
-            "reviewDate": "2019-03-03T22:00:00.000Z"
-          },
-          {
-            "designation": "ytgfred",
-            "clinicialName": "Carl",
-            "gmcNumber": "789321456",
-            "clinicalSignature": "Robert Tweed",
-            "reviewDate": "2019-03-04T22:00:00.000Z"
-          }
-        ],
-        "status": "Completed"
-      },
-      "emergencyView": {
-        "status": "Completed",
-        "dateCompleted": "22-Mar-2019 10:26",
-        "author": "Robert Tweed"
-      }
+    "author": "Dr Jonty Shannon",
+    "dateCreated": 1482185462518,
+    "status": "Complete and signed",
+    "personalDetails": {
+      "preferredName": "Mr",
+      "firstName": "Piter",
+      "surname": "Blood",
+      "streetAddress": "test",
+      "addressSecondLine": "test",
+      "city": "test",
+      "county": "test",
+      "postCode": "test",
+      "country": "test",
+      "nhsNumber": "8111149212",
+      "birthDate": null,
+      "status": "Completed",
+      "dateCompleted": "18-04-2019"
     },
-    "status": "Completed",
-    "dateCompleted": "22-Mar-2019 10:26",
-    "author": "Robert Tweed"
+    "summaryInformation": {
+      "dateCompleted": "22-Mar-2019",
+      "summary": "Lung cancer with bone metastases",
+      "details": "...",
+      "status": "Completed"
+    },
+    "personalPreferences": {
+      "dateCompleted": "22-Mar-2019",
+      "preferencesText": "Patient care priority 99",
+      "preferencesValue": "0",
+      "status": "Completed"
+    },
+    "clinicalRecommendation": {
+      "clinicalGuidance": "Clinical guidance on interventions 32",
+      "clinicalSignature": "Dr Miller",
+      "focusValue": "Symptom control",
+      "cprValue": "NotforCPR",
+      "dateDecision": 1551650993120,
+      "dateCompleted": "10-Apr-2019",
+      "status": "Completed"
+    },
+    "capacityAndRepresentation": {
+      "dateCompleted": "22-Mar-2019",
+      "capacityFirst": false,
+      "legalProxyValue": "No",
+      "status": "Completed"
+    },
+    "involvement": {
+      "dateCompleted": "22-Mar-2019",
+      "notSelectingReason": "...",
+      "involvementValue": "valueSetC1",
+      "documentExplanation": "",
+      "status": "Completed"
+    },
+    "clinicalSignatures": {
+      "dateCompleted": "22-Mar-2019",
+      "signaturesArray": [
+        {
+          "clinicalSignature": "",
+          "designation": "Designation 48",
+          "clinicialName": "Dr Miller",
+          "gmcNumber": 12345,
+          "isSrc": true,
+          "dateSigned": 1551650993120
+        },
+        {
+          "clinicalSignature": "",
+          "designation": "2Designation 48",
+          "clinicialName": "2Dr Miller",
+          "gmcNumber": 212345,
+          "isSrc": "",
+          "dateSigned": 21551650993120
+        }
+      ],
+      "status": "Completed"
+    },
+    "emergencyContacts": {
+      "dateCompleted": "22-Mar-2019",
+      "contactsArray": [
+        {
+          "role": "GP",
+          "name": "Text 35",
+          "phone": "Telephone number 60",
+          "details": "details info"
+        }
+      ],
+      "details": "Other details 70",
+      "status": "Completed"
+    },
+    "confirmation": {
+      "dateCompleted": "22-Mar-2019",
+      "confirmationsArray": [
+        {
+          "clinicalSignature": "Robert Tweed",
+          "designation": "Designation 26",
+          "clinicialName": "Text 84",
+          "gmcNumber": "c3507fd3-a867-4dea-b9d7-9f1f0fc996d3",
+          "reviewDate": 1555974000000
+        }
+      ],
+      "status": "Completed"
+    }
   }`;
   var obj = JSON.parse(json);
 
@@ -179,43 +181,45 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
 
   // If senior clinician, don't include in other columns.
   var seniorClinician;
-  for( i=0; i<obj.sections.clinicalSignatures.signaturesArray.length; i++ ){
-    if( obj.sections.clinicalSignatures.signaturesArray[i].isSrc ){
-      seniorClinician = obj.sections.clinicalSignatures.signaturesArray[i];
+  for( i=0; i<obj.clinicalSignatures.signaturesArray.length; i++ ){
+    if( obj.clinicalSignatures.signaturesArray[i].isSrc ){
+      seniorClinician = obj.clinicalSignatures.signaturesArray[i];
     }
   }
 
   // Include all other clinicians in here
   var clinicians = [];
-  for( i=0; i<obj.sections.clinicalSignatures.signaturesArray.length; i++ ){
-    if( !obj.sections.clinicalSignatures.signaturesArray[i].isSrc ){
-      clinicians.push(obj.sections.clinicalSignatures.signaturesArray[i]);
+  for( i=0; i<obj.clinicalSignatures.signaturesArray.length; i++ ){
+    if( !obj.clinicalSignatures.signaturesArray[i].isSrc ){
+      clinicians.push(obj.clinicalSignatures.signaturesArray[i]);
     }
   }
 
   var form = {
     // Map all properties from the json object (obj)
-    preferredName: obj.sections.personalDetails.preferredName,
-    fullName: obj.sections.personalDetails.firstName + ' ' + obj.sections.personalDetails.surname,
-    dateOfBirth: getDDMMMYYYY(obj.sections.personalDetails.birthDate),
-    dateCompleted: obj.sections.personalDetails.dateCompleted,
-    chiNumber: obj.sections.personalDetails.nhsNumber,
+    preferredName: obj.personalDetails.preferredName,
+    fullName: obj.personalDetails.firstName + ' ' + obj.personalDetails.surname,
+    dateOfBirth: getDDMMMYYYY(obj.personalDetails.birthDate),
+    dateCompleted: obj.personalDetails.dateCompleted,
+    chiNumber: obj.personalDetails.nhsNumber,
     address: address(obj),
-    sectionTwoDiagnostics: obj.sections.summaryInformation.summary,
-    sectionTwoDetails: obj.sections.summaryInformation.details,
-    sectionThreeX: obj.sections.personalPreferences.preferencesValue,
-    sectionThreeDetails: obj.sections.personalPreferences.preferencesText,
+    sectionTwoDiagnostics: obj.summaryInformation.summary,
+    sectionTwoDetails: obj.summaryInformation.details,
+    sectionThreeX: obj.personalPreferences.preferencesValue,
+    sectionThreeDetails: obj.personalPreferences.preferencesText,
     sectionFourClinicalRecommendationsX: getClinicalRecommendations(obj), // Returns position for the 'X' that appears on the form. 'Life-sustaining treatment' = 10 (left side), 'Symptom control' = 90 (right side)
-    sectionFourClinicalRecommendations: obj.sections.clinicalRecommendation.clinicalGuidance,
-    sectionFiveCapacity: obj.sections.capacityAndRepresentation.capacityFirst, // Yes or No
-    sectionFiveLegalProxy: obj.sections.capacityAndRepresentation.capacitySecond, // Yes, No or Unknown
-    sectionSixA: (obj.sections.involvement.variant == 'variantA'),
-    sectionSixB: (obj.sections.involvement.variant == 'variantB'),
-    sectionSixC: (obj.sections.involvement.variant == 'variantC'),
-    sectionSixC1: (obj.sections.involvement.variant == 'variantC1'),
-    sectionSixC2: (obj.sections.involvement.variant == 'variantC2'),
-    sectionSixC3: (obj.sections.involvement.variant == 'variantC3'),
-    sectionSixD: obj.sections.involvement.records,
+    sectionFourClinicalRecommendations: obj.clinicalRecommendation.clinicalGuidance,
+    sectionFourCPRValueX: getCPRValue(obj), // Returns position for the 'X' position of the text box that displays the signature 'clinicalSignature'
+    sectionFourClinicalSignature: obj.clinicalRecommendation.clinicalSignature,
+    sectionFiveCapacity: obj.capacityAndRepresentation.capacityFirst, // Yes or No
+    sectionFiveLegalProxy: obj.capacityAndRepresentation.legalProxyValue, // Yes, No or Unknown
+    sectionSixA: (obj.involvement.involvementValue == 'valueSetA'),
+    sectionSixB: (obj.involvement.involvementValue == 'valueSetB'),
+    sectionSixC: (obj.involvement.involvementValue == 'valueSetC'),
+    sectionSixC1: (obj.involvement.involvementValue == 'valueSetC1'),
+    sectionSixC2: (obj.involvement.involvementValue == 'valueSetC2'),
+    sectionSixC3: (obj.involvement.involvementValue == 'valueSetC3'),
+    sectionSixD: obj.involvement.records,
     sectionSevenClinician1: {
       designation: ( clinicians[0] ? clinicians[0].designation : '' ),
       name: ( clinicians[0] ? clinicians[0].clinicialName : '' ),
@@ -235,40 +239,42 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
       dateTime: ( seniorClinician ? getDDMMMYYYY(seniorClinician.dateAndTime) : '' )
     },
     sectionEightContact1: {
-      role: ( obj.sections.emergencyContacts.contactsArray[0] ? obj.sections.emergencyContacts.contactsArray[0].role : '' ),
-      name: ( obj.sections.emergencyContacts.contactsArray[0] ? obj.sections.emergencyContacts.contactsArray[0].name : '' ),
-      telephone: ( obj.sections.emergencyContacts.contactsArray[0] ? obj.sections.emergencyContacts.contactsArray[0].phone : '' ),
-      details: ( obj.sections.emergencyContacts.contactsArray[0] ? obj.sections.emergencyContacts.contactsArray[0].details : '' )
+      role: ( obj.emergencyContacts.contactsArray[0] ? obj.emergencyContacts.contactsArray[0].role : '' ),
+      name: ( obj.emergencyContacts.contactsArray[0] ? obj.emergencyContacts.contactsArray[0].name : '' ),
+      telephone: ( obj.emergencyContacts.contactsArray[0] ? obj.emergencyContacts.contactsArray[0].phone : '' ),
+      details: ( obj.emergencyContacts.contactsArray[0] ? obj.emergencyContacts.contactsArray[0].details : '' )
     },
     sectionEightContact2: {
-      role: ( obj.sections.emergencyContacts.contactsArray[1] ? obj.sections.emergencyContacts.contactsArray[1].role : '' ),
-      name: ( obj.sections.emergencyContacts.contactsArray[1] ? obj.sections.emergencyContacts.contactsArray[1].name : '' ),
-      telephone: ( obj.sections.emergencyContacts.contactsArray[1] ? obj.sections.emergencyContacts.contactsArray[1].phone : '' ),
-      details: ( obj.sections.emergencyContacts.contactsArray[1] ? obj.sections.emergencyContacts.contactsArray[1].details : '' )
+      role: ( obj.emergencyContacts.contactsArray[1] ? obj.emergencyContacts.contactsArray[1].role : '' ),
+      name: ( obj.emergencyContacts.contactsArray[1] ? obj.emergencyContacts.contactsArray[1].name : '' ),
+      telephone: ( obj.emergencyContacts.contactsArray[1] ? obj.emergencyContacts.contactsArray[1].phone : '' ),
+      details: ( obj.emergencyContacts.contactsArray[1] ? obj.emergencyContacts.contactsArray[1].details : '' )
     },
     sectionEightContact3: {
-      role: ( obj.sections.emergencyContacts.contactsArray[2] ? obj.sections.emergencyContacts.contactsArray[2].role : '' ),
-      name: ( obj.sections.emergencyContacts.contactsArray[2] ? obj.sections.emergencyContacts.contactsArray[2].name : '' ),
-      telephone: ( obj.sections.emergencyContacts.contactsArray[2] ? obj.sections.emergencyContacts.contactsArray[2].phone : '' ),
-      details: ( obj.sections.emergencyContacts.contactsArray[2] ? obj.sections.emergencyContacts.contactsArray[2].details : '' )
+      role: ( obj.emergencyContacts.contactsArray[2] ? obj.emergencyContacts.contactsArray[2].role : '' ),
+      name: ( obj.emergencyContacts.contactsArray[2] ? obj.emergencyContacts.contactsArray[2].name : '' ),
+      telephone: ( obj.emergencyContacts.contactsArray[2] ? obj.emergencyContacts.contactsArray[2].phone : '' ),
+      details: ( obj.emergencyContacts.contactsArray[2] ? obj.emergencyContacts.contactsArray[2].details : '' )
     },
     sectionEightContact4: {
-      role: ( obj.sections.emergencyContacts.contactsArray[3] ? obj.sections.emergencyContacts.contactsArray[3].role : '' ),
-      name: ( obj.sections.emergencyContacts.contactsArray[3] ? obj.sections.emergencyContacts.contactsArray[3].name : '' ),
-      telephone: ( obj.sections.emergencyContacts.contactsArray[3] ? obj.sections.emergencyContacts.contactsArray[3].phone : '' ),
-      details: ( obj.sections.emergencyContacts.contactsArray[3] ? obj.sections.emergencyContacts.contactsArray[3].details : '' )
+      role: ( obj.emergencyContacts.contactsArray[3] ? obj.emergencyContacts.contactsArray[3].role : '' ),
+      name: ( obj.emergencyContacts.contactsArray[3] ? obj.emergencyContacts.contactsArray[3].name : '' ),
+      telephone: ( obj.emergencyContacts.contactsArray[3] ? obj.emergencyContacts.contactsArray[3].phone : '' ),
+      details: ( obj.emergencyContacts.contactsArray[3] ? obj.emergencyContacts.contactsArray[3].details : '' )
     },
     sectionNineConfirmation1: {
-      reviewDate: ( obj.sections.confirmation.confirmationsArray[0] ? getDDMMMYYYY(obj.sections.confirmation.confirmationsArray[0].reviewDate) : '' ),
-      designation: ( obj.sections.confirmation.confirmationsArray[0] ? obj.sections.confirmation.confirmationsArray[0].designation : '' ),
-      name: ( obj.sections.confirmation.confirmationsArray[0] ? obj.sections.confirmation.confirmationsArray[0].clinicialName : '' ),
-      number: ( obj.sections.confirmation.confirmationsArray[0] ? obj.sections.confirmation.confirmationsArray[0].gmcNumber : '' )
+      reviewDate: ( obj.confirmation.confirmationsArray[0] ? getDDMMMYYYY(obj.confirmation.confirmationsArray[0].reviewDate) : '' ),
+      designation: ( obj.confirmation.confirmationsArray[0] ? obj.confirmation.confirmationsArray[0].designation : '' ),
+      name: ( obj.confirmation.confirmationsArray[0] ? obj.confirmation.confirmationsArray[0].clinicialName : '' ),
+      number: ( obj.confirmation.confirmationsArray[0] ? obj.confirmation.confirmationsArray[0].gmcNumber : '' ),
+      signature: ( obj.confirmation.confirmationsArray[0] ? obj.confirmation.confirmationsArray[0].clinicalSignature : '' )
     },
     sectionNineConfirmation2: {
-      reviewDate: ( obj.sections.confirmation.confirmationsArray[1] ? getDDMMMYYYY(obj.sections.confirmation.confirmationsArray[1].reviewDate) : '' ),
-      designation: ( obj.sections.confirmation.confirmationsArray[1] ? obj.sections.confirmation.confirmationsArray[1].designation : '' ),
-      name: ( obj.sections.confirmation.confirmationsArray[1] ? obj.sections.confirmation.confirmationsArray[1].clinicialName : '' ),
-      number: ( obj.sections.confirmation.confirmationsArray[1] ? obj.sections.confirmation.confirmationsArray[1].gmcNumber : '' )
+      reviewDate: ( obj.confirmation.confirmationsArray[1] ? getDDMMMYYYY(obj.confirmation.confirmationsArray[1].reviewDate) : '' ),
+      designation: ( obj.confirmation.confirmationsArray[1] ? obj.confirmation.confirmationsArray[1].designation : '' ),
+      name: ( obj.confirmation.confirmationsArray[1] ? obj.confirmation.confirmationsArray[1].clinicialName : '' ),
+      number: ( obj.confirmation.confirmationsArray[1] ? obj.confirmation.confirmationsArray[1].gmcNumber : '' ),
+      signature: ( obj.confirmation.confirmationsArray[1] ? obj.confirmation.confirmationsArray[1].clinicalSignature : '' )
     }
   }
 
@@ -369,6 +375,13 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
       height: 100
     });
 
+    // Clinical Signature...
+    doc.fontSize(10)
+    .text(form.sectionFourClinicalSignature, form.sectionFourCPRValueX, 768, {
+      width: 178,
+      height: 20
+    });
+
 
 
   // PAGE 2
@@ -380,13 +393,13 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
 
     // Capacity
     switch( form.sectionFiveCapacity ){
-      case '2': // Yes
+      case true: // Yes
         doc.ellipse(535, 52, 16, 10)
           .lineWidth(2)
           .strokeColor('#ff0000')
           .stroke();
         break;
-      case '1': // No
+      case false: // No
         doc.ellipse(562, 52, 16, 10)
           .lineWidth(2)
           .strokeColor('#ff0000')
@@ -396,19 +409,19 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
 
     // Legal Proxy
     switch( form.sectionFiveLegalProxy ){
-      case '2': // Yes
+      case 'Yes': // Yes
         doc.ellipse(470, 89, 16, 10)
           .lineWidth(2)
           .strokeColor('#ff0000')
           .stroke();
         break;
-      case '1': // No
+      case 'No': // No
         doc.ellipse(498, 89, 14, 10)
           .lineWidth(2)
           .strokeColor('#ff0000')
           .stroke();
         break;
-      case '3': // Unknown
+      case 'Unknown': // Unknown
         doc.ellipse(544, 89, 35, 12)
           .lineWidth(2)
           .strokeColor('#ff0000')
@@ -655,6 +668,11 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
         height: 18
       });
 
+      doc.text(form.sectionNineConfirmation1.signature, 507, 740, {
+        width: 79,
+        height: 18
+      });
+
     // Confirmation 2
       doc.text(form.sectionNineConfirmation2.reviewDate, 31, 760, {
         width: 78,
@@ -673,6 +691,11 @@ function makePDF(PDFDocument, blobStream, iframe, page1, page2) {
 
       doc.text(form.sectionNineConfirmation2.number, 395, 760, {
         width: 108,
+        height: 18
+      });
+
+      doc.text(form.sectionNineConfirmation2.signature, 507, 760, {
+        width: 79,
         height: 18
       });
 
